@@ -1,87 +1,127 @@
 const ul = document.getElementById("ul");
-const button = document.getElementById("submit");
-const input = document.getElementById("inputText");
-let list = [];
-let count = 0;
-const myToken = "d6fe87f2-9677-4534-bd39-2a5ae35d8b14";
+const buttonInvia = document.getElementById("submit");
+const inputText = document.getElementById("inputText");
+let lista = [];
 const myKey = "chiave";
 
-
 function loadList() {
-  fetch("https://ws.progettimolinari.it/cache/get", {
-    method: "POST",
+  fetch("/todo", {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "key": myToken
-    },
-    body: JSON.stringify({
-      key: myKey,
-    })
+    }
   })
   .then(response => response.json())
   .then(data => {
-    list = JSON.parse(data.result);
+    console.log(data.todos);
+    lista = data.todos;
     render();
   })
 }
 loadList();
 
-button.onclick = () => {
-  let data = {
-    "inputValue": input.value,
-    "completed": false
-  };
-  list.push(data);
-  render();
-  count++;
-  input.value = "";
-  update();
-};
-
 function render() {
-  let html = "";
-  list.forEach((element, id) => {
-    let completedClass = element.completed ? "done" : "";
-    html += `<li id='li_${id}' class='divs ${completedClass}'>${element.inputValue}<button type='button' class='pulsantiConferma' id='bottoneC_${id}'>conferma</button><button type='button' class='pulsantiElimina' id='bottoneE_${id}'>elimina</button></li>`;
-  });
-  ul.innerHTML = html;
+    let html = "";
+    lista.forEach((e, id) => {
+      let completo = e.completed ? "done" : "";
+      html += `<li id='li_${e.id}' class='divs ${completo}'>
+        ${e.inputValue}
+        <button type='button' class='pulsantiConferma' id='bottoneC_${e.id}'>conferma</button>
+        <button type='button' class='pulsantiElimina' id='bottoneE_${e.id}'>elimina</button>
+        
+  
+      </li>`;
+    });
+    ul.innerHTML = html;
+  
+    document.querySelectorAll(".pulsantiElimina").forEach((buttonElimina) => {
+      buttonElimina.onclick = () => {
+        const id = buttonElimina.id.replace("bottoneE_", "");
+        remove(id);
+      };
+    });
+  
+    document.querySelectorAll(".pulsantiConferma").forEach((buttonConferma) => {
+      buttonConferma.onclick = () => {
+        const id = buttonConferma.id.replace("bottoneC_", "");
+        update(id);
+      };
+    });
+  }
 
-  let eliminaButtons = document.querySelectorAll(".pulsantiElimina");
-  eliminaButtons.forEach((button) => {
-    button.onclick = () => {
-      const id = parseInt(button.id.replace("bottoneE_", ""));
-      list.splice(id, 1);
-      count--;
-      render();
-      update();
-    };
-  });
+buttonInvia.onclick = () => {
+  const data = {
+    inputValue: inputText.value,
+    completed: false,
+  };
 
-  let confermaButtons = document.querySelectorAll(".pulsantiConferma");
-  confermaButtons.forEach((button) => {
-    button.onclick = () => {
-      const id = parseInt(button.id.replace("bottoneC_", ""));
-      list[id].completed = true;
-      render();
-      update();
-    };
-  });
-}
-
-function update() {
-  fetch("https://ws.progettimolinari.it/cache/set", {
+  fetch("/todo/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "key": myToken
     },
-    body: JSON.stringify({
-      key: myKey,
-      value: JSON.stringify(list)
-    })
+    body: JSON.stringify(data),
   })
-  .then(response => response.json());
-  
+    .then((response) => response.json())
+    .then((result) => {
+      lista.push(result.todo); 
+      render();
+      inputText.value = ""; 
+    });
+};
+
+
+
+
+function update(id) {
+  const todo = lista.find((item) => item.id === id);
+  fetch("/todo/complete", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(todo),
+  })
+    .then((response) => response.json())
+    .then(() => {
+      if(!todo.completed){
+      todo.completed = true;
+      }else{
+        todo.completed=false
+      } 
+      render();
+    });
 }
+
+/*
+function modify(todo) {
+  fetch("/todo/modify", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(todo),
+  })
+    .then((response) => response.json())
+    .then(() => {
+     todo.inputValue= modifyText.value;
+      render();
+    });
+}
+    */
+
+function remove(id) {
+    fetch(`/todo/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then(() => {
+        lista = lista.filter((item) => item.id !== id);
+        render();
+      });
+  }
 
 render();
