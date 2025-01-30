@@ -26,8 +26,8 @@ function render() {
       let completo = e.completed ? "done" : "";
       html += `<li id='li_${e.id}' class='divs ${completo}'>
         ${e.inputValue}
-        <button type='button' class='pulsantiConferma' id='bottoneC_${e.id}'>conferma</button>
-        <button type='button' class='pulsantiElimina' id='bottoneE_${e.id}'>elimina</button>
+        <button type='button' class='pulsantiConferma' id='bottoneC_${e.id}'>elimina</button>
+        <button type='button' class='pulsantiElimina' id='bottoneE_${e.id}'>conferma</button>
         
   
       </li>`;
