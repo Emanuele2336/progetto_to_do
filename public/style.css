@@ -10,7 +10,7 @@ body {
     left:70%;
   }
   .done{
-    background-color: green;
+    background-color: green !important;
   }
   .pulsantiConferma{
     margin-left: 5px;

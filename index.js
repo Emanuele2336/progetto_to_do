@@ -79,6 +79,7 @@ app.post("/todo/add", async (req, res) => {
 
  app.delete("/todo/:id", async (req, res) => {
    try {
+      console.log("ciao");
      await executeQuery("DELETE FROM todo WHERE id = ?", [req.params.id]);
      res.json({ result: "Ok" });
    } catch (error) {

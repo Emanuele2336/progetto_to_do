@@ -26,7 +26,7 @@ function render() {
       let completo = e.completed ? "done" : "";
       html += `<li id='li_${e.id}' class='divs ${completo}'>
         ${e.inputValue}
-        <button type='button' class='pulsantiConferma' id='bottoneC_${e.id}'>conferma</button>
+        <button type='button' class='pulsantiConferma' id='bottoneC_${id}'>conferma</button>
         <button type='button' class='pulsantiElimina' id='bottoneE_${e.id}'>elimina</button>
         
   
@@ -37,14 +37,15 @@ function render() {
     document.querySelectorAll(".pulsantiElimina").forEach((buttonElimina) => {
       buttonElimina.onclick = () => {
         const id = buttonElimina.id.replace("bottoneE_", "");
-        remove(id);
+        remove(id)
+        .then(loadList)
       };
     });
   
     document.querySelectorAll(".pulsantiConferma").forEach((buttonConferma) => {
       buttonConferma.onclick = () => {
         const id = buttonConferma.id.replace("bottoneC_", "");
-        update(id);
+        update(id).then(loadList);
       };
     });
   }
@@ -76,8 +77,9 @@ buttonInvia.onclick = () => {
 
 
 
-function update(id) {
-  const todo = lista.find((item) => item.id === id);
+async function update(id) {
+    console.log(id);
+  const todo = lista[id];
   fetch("/todo/complete", {
     method: "PUT",
     headers: {
@@ -93,6 +95,8 @@ function update(id) {
         todo.completed=false
       } 
       render();
+      console.log(todo);
+      console.log("lista"+lista)
     });
 }
 
@@ -113,7 +117,9 @@ function modify(todo) {
 }
     */
 
-function remove(id) {
+async function remove(id) {
+    console.log(lista[0].id)
+    console.log(id)
     fetch(`/todo/${id}`, {
       method: "DELETE",
       headers: {
@@ -123,6 +129,7 @@ function remove(id) {
       .then((response) => response.json())
       .then(() => {
         lista = lista.filter((item) => item.id !== id);
+        console.log(lista)
         render();
       });
   }
