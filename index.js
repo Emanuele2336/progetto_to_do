@@ -12,16 +12,20 @@ const mysql = require('mysql2');
 
 const conf = JSON.parse(fs.readFileSync('conf.json'));
 
-let connection = mysql. createConnection ({
-   host: "mysql-38658f32-itis-8f89.l.aivencloud.com",
-   user: "avnadmin",
-   port: 15684, 
-   password: "AVNS_nBC3zhp3S72Xj_Be3XA",
-   database: "defaultdb",
-   ssl: {
-   ca: fs. readFileSync(__dirname +
-   '/ca.pem' )
-   }
+const connection = mysql.createConnection({
+   host: conf.host,
+ 
+    user: conf.user,
+ 
+    password: conf.password,
+ 
+    database: conf.database,
+    
+    port: conf.port,
+
+    ssl : {
+     ca :  fs.readFileSync(__dirname + '/ca.pem')
+    }    
 });
 
 
