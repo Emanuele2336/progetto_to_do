@@ -6,7 +6,7 @@
     "database": "defaultdb",
     "port": "15684",
     "ssl": {
-        "ca": " fs.readFileSync(__dirname + '/ca.pem')"
+        "ca": "fs.readFileSync(__dirname + '/ca.pem')"
     }
 
 }
