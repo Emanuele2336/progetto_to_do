@@ -1,0 +1,12 @@
+{
+
+    "host": "mysql-38658f32-itis-8f89.l.aivencloud.com",
+    "user": "avnadmin",
+    "password": "AVNS_nBC3zhp3S72Xj_Be3XA",
+    "database": "defaultdb",
+    "port": "15684",
+    "ssl": {
+        "ca": "fs.readFileSync(__dirname + '/ca.pem')"
+    }
+
+}
